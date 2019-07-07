@@ -1,0 +1,6 @@
+{
+    "extends": "fortech-react",
+    "env": {
+        "browser": true
+    }
+}

@@ -1,0 +1,17 @@
+@import "reset.css";
+
+$base-color: #c6538c;
+
+body {
+  background-color: $base-color;
+}
+
+header{
+  background-color: #fff159;
+}
+li div, form{
+  display: inline;
+}
+li div span{
+  vertical-align: top;
+}
