@@ -1,25 +1,42 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import Breadcrumb from "./Breadcrumb"
+function ProductList(props) {
 
-function ProductList() {
-    return (
-        <ul>
-            <li>
-                <div>
-                    <img
-                        src="http://mla-s2-p.mlstatic.com/912815-MLA31150221316_062019-I.jpg"
-                        alt=""
-                    />
-                </div>
-                <div className="price">
-                    <span>$20.000</span>
-                </div>
-                <div className="condition">
-                    <span>Usado</span> - <span>CABA</span>
-                </div>
-                <h1>Titulo</h1>
-            </li>
-        </ul>
-    );
+    const renderItems = ()=>{
+        if(props.staticContext.data){
+            return <div>
+                        <Breadcrumb categories={props.staticContext.data.categories} />
+                        <ul>
+                            {props.staticContext.data.items.map((elem) => {
+                            return (
+                            <li key={elem.id}>
+                                <div>
+                                    <Link to={`/items/${ elem.id }`}>
+                                        <img src={elem.picture} alt=""/>
+                                    </Link>
+                                </div>
+                                <div className="price">
+                                    <span>${elem.price.amount}</span>
+                                </div>
+                                <div className="condition">
+                                    <span>{elem.condition}</span> - <span>CABA</span>
+                                </div>
+                                <Link to={`/items/${ elem.id }`}>
+                                    <h1>{elem.title}</h1>
+                                </Link>
+                            </li>)
+                        })}
+                        </ul>
+                    </div>;
+        }else{
+            return <div>No data</div>;
+        }
+    }
+
+    return (<div>
+                {renderItems()}
+            </div>);
 }
 
 export default ProductList;

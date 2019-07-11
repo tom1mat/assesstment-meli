@@ -1,6 +1,29 @@
 {
-    "extends": "fortech-react",
-    "env": {
-        "browser": true
+    "root": true,
+    "extends": [
+        "./legacy.js",
+        "../globals.js"
+    ],
+    "rules": {
+        "func-names": ["off"],
+        "indent": ["error", 4],
+        "max-len": ["warn", {
+            "code": 120,
+            "tabWidth": 4,
+            "ignoreUrls": true,
+            "ignoreComments": false
+        }],
+        "no-param-reassign": ["off"],
+        "no-underscore-dangle": ["warn", { "allowAfterThis": false }],
+        "one-var": ["warn", "never"],
+        "quote-props":  [
+            "warn",
+            "as-needed",
+            {
+                "keywords": false,
+                "unnecessary": true,
+                "numbers": false
+            }
+        ]
     }
 }
