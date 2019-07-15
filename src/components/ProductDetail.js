@@ -1,17 +1,21 @@
 import React from "react";
+import { connect } from "react-redux";
 
-class ProductDetail extends React.PureComponent {
-    constructor ( props ) {
-        super();
-    }
-    render() {
-        if ( this.props.staticContext.data ){
-            return <div>{this.props.staticContext.data.item.title}</div>;
-        }else{
-            return <div> Product not found</div>
-        }
-        
+import Breadcrumb from "./Breadcrumb";
+
+function ProductDetail( props ) {
+    if ( props.itemResult ){
+        return (<div>
+                    <Breadcrumb categories={props.itemResult.item.categories} />
+                    {props.itemResult.item.title}
+                </div>);
+    }else{
+        return <div>Product not found</div>
     }
 }
 
-export default ProductDetail;
+const mapStateToProps = ( state ) =>({
+    itemResult: state.itemResult
+});
+
+export default connect( mapStateToProps )( ProductDetail );

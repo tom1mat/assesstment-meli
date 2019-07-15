@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Breadcrumb({categories}){
     return <div className="breadcrumb">
@@ -8,7 +9,17 @@ export default function Breadcrumb({categories}){
                         if(index === categories.length-1)
                             divider = "";
 
-                        return (<span key={index}><a href="/">{category}</a> {divider} </span>);
+                        return <Link to={`/?category=${ category.id }`} key={ index }> { `${ category.name} ${ divider }` } </Link>
+                        
+                        // let url = "";
+                        // for(let i = index; i >= 0; i--){
+                        //     url+="/"+categories[i].replace(/\s/g, '-').replace(',','');
+                        // }
+                        // console.log(url);
+                        // return (<form method="POST" action={url} key={index}>
+                        //             <input type="hidden" name="categoryId" value={category.id}></input>
+                        //             <button>{category}</button> {divider}
+                        //         </form>);
                     })
                 }
             </div>;

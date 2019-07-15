@@ -1,3 +1,4 @@
+
 {
   "presets": [
       [ "env",
@@ -13,5 +14,6 @@
           "presets": ["react"],
           "plugins": ["transform-es2015-modules-commonjs"]
       }
+
   }
 }

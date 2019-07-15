@@ -1,43 +1,61 @@
 import express from "express";
 import path from "path";
-import { StaticRouter } from "react-router-dom";
-import fetch from "isomorphic-fetch";
-import "@babel/polyfill";
-
 import React from "react";
 import { renderToString } from "react-dom/server";
+import { StaticRouter } from "react-router-dom";
+import fetch from "isomorphic-fetch";
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+import "@babel/polyfill";
+
 import App from "./components/App";
+import reducer from "./reducer";
 
 const app = express();
 const port = 1234;
 const apiQueryLimit = 4;
 
+const renderApp = ( location, data={ } )=>{
+    const store = createStore( reducer, data );
+    const jsx = (
+                <Provider store={ store }>
+                    <StaticRouter context={ { } } location={ location } >
+                        <App />
+                    </StaticRouter>
+                </Provider>);
+    return htmlTemplate( renderToString( jsx ), store.getState() );
+}
+
 const formatPrice = ( price ) =>{
     return String(price).split('.');
 }
-const htmlTemplate = ( reactDom ) =>{
+const htmlTemplate = ( reactDom, state ) =>{
     return `
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="utf-8">
             <title>Assesstment Meli</title>
+            <base href="/">
+            <link rel="stylesheet" type="text/css" href="app.styles.css">
+            <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
         </head>
         
         <body>
             <div id="app">${ reactDom }</div>
-            <script type="text/jsx" src="./app.bundle.js"></script>
+            <script>
+                window.___REDUX_STATE = ${ JSON.stringify( state ) }
+            </script>
+            <script type="text/jsx" src="app.bundle.js"></script>
         </body>
         </html>
     `;
 }
 
-const renderApp = ( location, data=null )=>{
-    const jsx = <StaticRouter context={ { data } } location={ location } ><App /></StaticRouter>;
-    return htmlTemplate( renderToString( jsx ) );
-}
 
-
+app.listen( port, () => {
+    console.log( `Server listening on ${ port }` );
+} );
 
 app.use( express.static( path.resolve( __dirname, "../dist" ) ) );
 app.use( ( req, res, next ) => {
@@ -48,9 +66,11 @@ app.use( ( req, res, next ) => {
 } );
 
 app.get( "/items/:id", async ( req, res ) => {
-    const productId = req.params.id;
+    console.log(req.url);
 
-    res.writeHead( 200, { "Content-Type": "text/html" } );
+    const productId = req.params.id;
+    if(req.url.includes('items'));
+        res.writeHead( 200, { "Content-Type": "text/html" } );
 
     try {
         const [ itemResponse, descriptionResponse ] = await Promise.all( [
@@ -59,13 +79,30 @@ app.get( "/items/:id", async ( req, res ) => {
         ] );
 
         if(itemResponse.status != 200 || descriptionResponse.status != 200) {
-            res.end( renderApp( req.url ) );
+            return res.end( renderApp( req.url ) );
         }else{
             const [ item, description ] = await Promise.all( [
                 itemResponse.json(),
                 descriptionResponse.json(),
             ] );
 
+            const categoriesResponse = await fetch( `https://api.mercadolibre.com/categories/${ item.category_id }` );
+            const categoriesData = await categoriesResponse.json();
+
+            if(categoriesResponse.status != 200 || !categoriesData.id ){
+                // We check the value id for knowing if a category was found.
+                return res.end( renderApp( req.url ) );
+            }
+
+            const categories = [];
+
+            categories.push(...categoriesData.path_from_root.map( (category) => { 
+                return {
+                    id: category.id,
+                    name: category.name
+                }
+             } ));
+            
             const [amount, decimals] = formatPrice(item.price);
             const dataFormated = {
                 author:{
@@ -82,14 +119,14 @@ app.get( "/items/:id", async ( req, res ) => {
                     amount,
                     decimals: decimals || 0
                 },
+                categories,
             }
             dataFormated.picture = item.thumbnail;
             dataFormated.condition = item.condition;
             dataFormated.free_shipping = item.shipping.free_shipping;
             dataFormated.sold_quantity = item.sold_quantity;
             dataFormated.sold_quantity = description.plain_text;
-
-            res.end( renderApp( req.url, dataFormated ) );
+            res.end( renderApp( req.url, { itemResult: dataFormated } ) );
         }
     } catch ( error ) {
         console.error( error );
@@ -98,15 +135,20 @@ app.get( "/items/:id", async ( req, res ) => {
 } );
 
 app.get( "/", async ( req, res ) => {
+    console.log(req.url);
     res.writeHead( 200, { "Content-Type": "text/html" } );
-    if ( req.query.q ) {
-        const search = req.query.q;
+    if ( req.query.q  || req.query.category ) {
+        const search = req.query.q ? `q=${ req.query.q }&` : "";
+        const category =  req.query.category ? `category=${ req.query.category }&` : ""; 
         try {
-            const url = `https://api.mercadolibre.com/sites/MLA/search?q=${ search }&limit=${ apiQueryLimit }`;
-            console.log(url);
+            const url = `https://api.mercadolibre.com/sites/MLA/search?limit=${ apiQueryLimit }&${ search }${ category }`;
             const response = await fetch( url );
             if ( response.status === 200 ) {
                 const data = await response.json();
+
+                if(data.results && data.results.length === 0){
+                    return res.end( renderApp( req.url, { searchResult: null } ) );
+                }
 
                 //const categories = new Set();
                 // const category_available_filters = data.available_filters.filter( filter => filter.id === "category" );
@@ -124,7 +166,12 @@ app.get( "/", async ( req, res ) => {
                     const category = filters[0];
                     
                     if(category.values[0].path_from_root){
-                        categories.push(...category.values[0].path_from_root.map( category => category.name ));
+                        categories.push(...category.values[0].path_from_root.map( (category) => { 
+                            return {
+                                id: category.id,
+                                name: category.name
+                            }
+                         } ));
                     }
                 }else{
                     const available_filters = data.available_filters.filter( filter => filter.id === "category" );
@@ -135,13 +182,16 @@ app.get( "/", async ( req, res ) => {
                         if(categoryResponse.status == 200){
                             const categoryData = await categoryResponse.json();
                             if(categoryData.path_from_root){
-                                categories.push(...categoryData.path_from_root.map( category => category.name ));
+                                categories.push(...categoryData.path_from_root.map( (category) => {
+                                    return {
+                                        id: category.id,
+                                        name: category.name
+                                    }
+                                } ));
                             }
                         }
                     }
                 }
-
-                console.log(categories);
     
                 const dataFormated = {
                     author:{
@@ -167,28 +217,20 @@ app.get( "/", async ( req, res ) => {
                 });
     
                 dataFormated.categories = categories;
-    
-                res.end( renderApp( req.url, dataFormated ) );
+                return res.end( renderApp( req.url, { searchResult: dataFormated } ) );
             }else{// END if response.status === 200
                 return res.end( renderApp( req.url ) );
             }
         } catch ( error ) {
             console.error( error );
-            res.end( renderApp( req.url ) );
+            return res.end( renderApp( req.url, { searchResult: null } ) );
         }
     }else{
-        res.end( renderApp( req.url ) );
+        return res.end( renderApp( req.url ) );
     }
 } );
 
-// app.get( "/*", ( req, res ) => {
-//     const jsx = <StaticRouter context={ {} } location={ req.url }><App /></StaticRouter>;
-//     const reactDom = renderToString( jsx );
-
-//     res.writeHead( 200, { "Content-Type": "text/html" } );
-//     res.end( htmlTemplate( reactDom ) );
-// } );
-
-app.listen( port, () => {
-    console.log( `Server listening on ${ port }` );
-} );
+app.get('*', (req, res, next)=>{
+    res.writeHead( 200, { "Content-Type": "text/html" } );
+    return res.end( renderApp( "/404" ) );
+});

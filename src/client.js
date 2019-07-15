@@ -1,10 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router } from "react-router-dom";
-import App from "./components/App";
-import "./styles/styles.scss";
+import { Provider } from "react-redux";
+import { createStore } from "redux";
+import reducer from "./reducer";
 
-const jsx = <Router><App /></Router>;
+import "./styles/styles.scss";
+import App from "./components/App";
+
+const jsx = (<Provider store ={ createStore( reducer, window.___REDUX_STATE ) }>
+                <Router>
+                    <App />
+                </Router>
+            </Provider>);
 
 const app = document.getElementById( "app" );
 ReactDOM.hydrate( jsx, app );
