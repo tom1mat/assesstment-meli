@@ -12,7 +12,7 @@ import App from "./components/App";
 import reducer from "./reducer";
 
 const app = express();
-const port = 1234;
+const port = process.env.PORT || 3000;
 const apiQueryLimit = 4;
 
 const renderApp = ( location, data={ } )=>{
