@@ -12,7 +12,7 @@ export default function App() {
     return (
         <div>
             <Header />
-            <div className="container">
+            <div className="main-container">
                 <Switch>
                     <Route exact path="/" component={ ProductList } />
                     <Route path="/items/:id" component={ ProductDetail } />

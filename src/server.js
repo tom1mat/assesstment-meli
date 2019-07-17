@@ -117,7 +117,7 @@ app.get( "/items/:id", async ( req, res ) => {
                 price: {
                     currency: item.currency_id,
                     amount,
-                    decimals: decimals || 0
+                    decimals: decimals || "00"
                 },
                 categories,
             }
@@ -125,7 +125,7 @@ app.get( "/items/:id", async ( req, res ) => {
             dataFormated.condition = item.condition;
             dataFormated.free_shipping = item.shipping.free_shipping;
             dataFormated.sold_quantity = item.sold_quantity;
-            dataFormated.sold_quantity = description.plain_text;
+            dataFormated.description = description.plain_text;
             res.end( renderApp( req.url, { itemResult: dataFormated } ) );
         }
     } catch ( error ) {
@@ -208,11 +208,12 @@ app.get( "/", async ( req, res ) => {
                         price: {
                             currency: item.currency_id,
                             amount,
-                            decimals: decimals || 0
+                            decimals: decimals || "00"
                         },
                         picture: item.thumbnail,
                         condition: item.condition,
-                        free_shipping: item.shipping.free_shipping
+                        free_shipping: item.shipping.free_shipping,
+                        state: item.seller_address.state.name
                     }
                 });
     
