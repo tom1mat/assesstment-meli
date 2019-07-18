@@ -5,6 +5,7 @@
   "main": "webpack.config.js",
   "scripts": {
     "build": "webpack",
+    "test": "node index.js & cypress run",
     "start": "node index.js",
     "dev": "webpack --watch --progress & nodemon index.js"
   },

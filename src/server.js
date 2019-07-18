@@ -29,10 +29,13 @@ const htmlTemplate = (reactDom, state) => `
         <head>
             <meta charset="utf-8">
             <meta id="viewport" name="viewport" content ="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-            <title>Assesstment Meli</title>
+            <meta name="description" content="This is a server-side React project test, enjoy it!.">
+            <meta name="keywords" content="React, Express, server-side, Mercado, Libre">
+            <meta name="author" content="Tomás Mateo">
             <base href="/">
             <link rel="stylesheet" type="text/css" href="app.styles.css">
             <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+            <title>Assesstment for Mercado Libre</title>
         </head>
         
         <body>
