@@ -1,29 +1,17 @@
 {
-    "root": true,
     "extends": [
-        "./legacy.js",
-        "../globals.js"
+      "eslint-config-airbnb-base",
+      "plugin:react/recommended"
     ],
+    "parser": "babel-eslint",
     "rules": {
-        "func-names": ["off"],
-        "indent": ["error", 4],
-        "max-len": ["warn", {
-            "code": 120,
-            "tabWidth": 4,
-            "ignoreUrls": true,
-            "ignoreComments": false
-        }],
-        "no-param-reassign": ["off"],
-        "no-underscore-dangle": ["warn", { "allowAfterThis": false }],
-        "one-var": ["warn", "never"],
-        "quote-props":  [
-            "warn",
-            "as-needed",
-            {
-                "keywords": false,
-                "unnecessary": true,
-                "numbers": false
-            }
-        ]
-    }
-}
+      "max-len": [2, 150, 2, {
+        "ignoreUrls": true,
+        "ignoreComments": false
+      }]
+    },
+    "ecmaFeatures": {
+        "blockBindings": true,
+        "jsx": true
+      }
+  }

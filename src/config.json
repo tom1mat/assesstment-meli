@@ -1,0 +1,4 @@
+{
+    "API_URL": "https://api.mercadolibre.com/",
+    "APP_PORT": 3000
+}

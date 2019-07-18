@@ -1,20 +1,21 @@
-import React from "react";
-import { connect } from "react-redux";
+/* eslint-disable indent */
+import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-import Breadcrumb from "./Breadcrumb";
-import { numberWithDots } from "../utils";
+import Breadcrumb from './Breadcrumb';
+import { numberWithDots } from '../utils';
 
-function ProductDetail({itemResult}) {
-    if (itemResult){
-        if(itemResult.condition === "new"){
-            itemResult.condition = "Nuevo"; 
-        }else if(itemResult.condition === "used"){
-            itemResult.condition = "Usado"; 
-        }else{
-            itemResult.condition = "";
-        }
+function ProductDetail({ itemResult }) {
+  if (itemResult) {
+    let condition = '';
+    if (itemResult.condition === 'new') {
+      condition = 'Nuevo';
+    } else if (itemResult.condition === 'used') {
+      condition = 'Usado';
+    }
 
-        return (<div className="mesh-row">
+    return (<div className="mesh-row">
                     <div className="mesh-col-12 pl-0">
                         <Breadcrumb categories={itemResult.item.categories} />
                     </div>
@@ -25,7 +26,7 @@ function ProductDetail({itemResult}) {
                         <div className="mesh-col-xxs-12 mesh-col-m-4">
                             <div className="mesh-col-xxs-6 mesh-col-m-12">
                                 <div className="mesh-col-12 detail-header">
-                                    <span className="condition">{itemResult.condition}</span>
+                                    <span className="condition">{condition}</span>
                                     <span> - {itemResult.sold_quantity} unidades</span>
                                 </div>
                                 <div className="mesh-col-12">
@@ -39,7 +40,7 @@ function ProductDetail({itemResult}) {
                                 <div className="mesh-col-12">
                                     Envío gratis
                                 </div>
-                            ): null}
+                            ) : null}
                             </div>
                             <div className="mesh-col-xxs-6 mesh-col-m-12">
                                 <button className="button-buy">Comprar ahora</button>
@@ -54,13 +55,20 @@ function ProductDetail({itemResult}) {
                         </div>
                     </div>
                 </div>);
-    }else{
-        return <div>Product not found</div>
-    }
+  }
+  return <div className="mesh-row">
+                    <div className="mesh-col-12 container p-10 text-center">
+                        <h1>Producto no encontrado</h1>
+                    </div>
+                </div>;
 }
 
-const mapStateToProps = ( state ) =>({
-    itemResult: state.itemResult
+const mapStateToProps = state => ({
+  itemResult: state.itemResult,
 });
 
-export default connect( mapStateToProps )( ProductDetail );
+ProductDetail.propTypes = {
+    itemResult: PropTypes.object,
+};
+
+export default connect(mapStateToProps)(ProductDetail);

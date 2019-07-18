@@ -1,15 +1,12 @@
-import { Switch, Route } from "react-router-dom";
-import React from "react";
-import Header from "./Header";
-import ProductDetail from "./ProductDetail";
-import ProductList from "./ProductList";
-import NotFound from "./NotFound";
-
-//console.log('app env browser: '+process.env.BROWSER);
-    
+import { Switch, Route } from 'react-router-dom';
+import React from 'react';
+import Header from './Header';
+import ProductDetail from './ProductDetail';
+import ProductList from './ProductList';
+import NotFound from './NotFound';
 
 export default function App() {
-    return (
+  return (
         <div>
             <Header />
             <div className="main-container">
@@ -20,5 +17,5 @@ export default function App() {
                 </Switch>
             </div>
         </div>
-    );
+  );
 }

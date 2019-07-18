@@ -1,22 +1,36 @@
-@import "reset.css";
-@import "mesh.min.css";
-
-@font-face {
-  font-family: "Proxima Nova";
-  src: url(fonts/proxima-nova-regular.ttf);
-}
-
 $black: rgba(0,0,0,.8);
 $light-grey: #8080801a;
 $yellow: #fff159;
 $white: #fff;
 $button-primary: #3483fa;
 
+@import "reset.css";
+@import "mesh.min.css";
+@import "product-detail.scss";
+@import "product-list.scss";
+
+@font-face {
+  font-family: "Proxima Nova";
+  src: url(fonts/proxima-nova-regular.ttf);
+}
+
 .pl-0{
   padding-left: 0;
 }
 .mr-0{
   margin-right: 0;
+}
+.mb-10{
+  margin-bottom: 10% !important;
+}
+.mb-2{
+  margin-bottom: 2% !important;
+}
+.p-10{
+  padding: 10% !important;
+}
+.text-center{
+  text-align: center;
 }
 body {
   background-color: #f5f5f5;
@@ -30,38 +44,8 @@ h1{
   font-size: 20px;
   font-weight: 400;
 }
-.detail-header{
-  font-size: 14px;
-  color: rgba(0,0,0,.45);
-}
-.detail-price{
-  margin: 10px 0 15px 0;
-}
-.detail-price-amount{
-  font-size: 36px;
-  font-weight: 300;
-}
-.detail-price-cents{
-  font-size: 25px;
-  vertical-align: text-bottom;
-  line-height: 34px;
-  margin-left: 3px;
-}
 
-.item-price-amount{
-  font-size: 25px;
-  font-weight: 300;
-}
-.item-price-cents{
-  font-size: 16px;
-  vertical-align: text-bottom;
-  line-height: 25px;
-  margin-left: 3px;
-}
 
-.detail-description{
-  margin: 5% 0 5% 0;
-}
 header{
   background-color: $yellow;
   height: 50px;
@@ -83,19 +67,13 @@ header{
     color: #3483fa;
   }
 }
-li div, form{
-  display: inline;
-}
-li div span{
-  vertical-align: top;
-}
+
 .form-search{
   input{
-    width: 100%;
+    width: 90%;
     height: 39px;
     padding-right: 5%;
     padding-left: 15px;
-
     background-color: $white;
     border: 0 rgba(0,0,0,.2);
     box-shadow: 0 1px 2px 0 rgba(0,0,0,.2);
@@ -141,30 +119,6 @@ hr {
   border-color: $light-grey;
 }
 
-.button-buy{
-    border-color: $button-primary;
-    background-color: $button-primary;
-    color: $white;
-    border: .05556em solid;
-    cursor: pointer;
-    box-shadow: 0 0 0 0 $white;
-    font-family: Proxima Nova,-apple-system,Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 1;
-    padding: 14px 32px;
-    text-align: center;
-    border-radius: 4px;
-}
-.thumbnail{
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-}
-.image-detail{
-  width: 90%;
-}
-
 @media (max-width: 550px){
   .form-search button{
     margin-left: -10%;
@@ -192,5 +146,50 @@ hr {
   }
   .logo-large{
     display: block;
+  }
+}
+
+@media (max-width: 768px){
+  header{
+    height: 100px !important;
+    padding-top: 40px
+  }
+  .form-search{
+    button{
+      top: 60px;
+    }
+    input{
+      height: 65px;
+    }
+  }
+  .logo{
+    margin-top: 15px;
+  }
+  .item-state{
+    margin-top: 15px;
+    text-align: center;
+  }
+  .thumbnail{
+    height: auto;
+  }
+}
+
+@media (max-width: 480px){
+  .form-search{
+    input{
+      width: 80%;
+      height: 55px
+    }
+    button{
+      margin-left: -12%;
+    }
+  }
+  header{
+    height: 124px !important;
+    padding-top: 0px;
+    .logo{
+      width: 33px;
+      margin-bottom: 7px;
+    }
   }
 }
