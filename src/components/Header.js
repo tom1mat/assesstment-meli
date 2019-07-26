@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 function Header() {
   return (
         <header style={ { height: 50 } }>
-            <div className="mesh-row">
+            <div className="mesh-row mr-0">
                 <div className="mesh-col-s-2 mesh-col-xxs-12">
                     <Link to="/">
                         <img
